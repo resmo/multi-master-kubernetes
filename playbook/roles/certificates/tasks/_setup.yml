@@ -1,31 +1,50 @@
 - file:
+    path: secret
+    state: directory
+    mode: 0770
+
+- stat: path=ssl
+  register: ssl_move_required
+
+- copy:
+    src: ssl
+    dest: secret/ssl
+    directory_mode: true
+  when: ssl_move_required.stat.exists
+
+- file:
     path: ssl
+    state: absent
+  when: ssl_move_required.stat.exists
+
+- file:
+    path: secret/ssl
     state: directory
     mode: 0770
 
 - file:
-    path: ssl/bin
+    path: secret/ssl/bin
     state: directory
     mode: 0770
 
 - name: download cfssl
   get_url:
     url: https://pkg.cfssl.org/{{ cfssl_version }}/cfssl_{{ ansible_system | lower }}-amd64
-    dest: ssl/bin/cfssl
+    dest: secret/ssl/bin/cfssl
     mode: 0755
 
 - name: download cfssljson
   get_url:
     url: https://pkg.cfssl.org/{{ cfssl_version }}/cfssljson_{{ ansible_system | lower }}-amd64
-    dest: ssl/bin/cfssljson
+    dest: secret/ssl/bin/cfssljson
     mode: 0755
 
 - file:
-    path: ssl/infra
+    path: secret/ssl/infra
     state: directory
     mode: 0770
 
 - file:
-    path: ssl/kubernetes
+    path: secret/ssl/kubernetes
     state: directory
     mode: 0770

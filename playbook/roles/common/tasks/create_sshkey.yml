@@ -5,10 +5,10 @@
     register: key
     tags: sshkey
 
-  - local_action: copy content="{{ key.private_key }}" dest="~/.ssh/id_rsa_{{ ssh_key }}"
+  - local_action: copy content="{{ key.private_key }}" dest="secret/id_rsa_{{ ssh_key }}"
     when: key.changed
     tags: sshkey
 
-  - file: path="~/.ssh/id_rsa_{{ ssh_key }}" mode=0600
+  - file: path="secret/id_rsa_{{ ssh_key }}" mode=0600
     when: key.changed
     tags: sshkey

@@ -1,7 +1,7 @@
 - name: create infra certificate authorities
   shell: echo '{{ lookup('template', '../templates/ca_csr.j2', convert_data=False) }}' | bin/cfssl gencert -initca - | bin/cfssljson -bare "{{ item }}" -
   args:
-    chdir: ssl
+    chdir: secret/ssl
     creates: "{{ item }}.pem"
   with_items:
     - infra/etcd-ca
@@ -9,7 +9,7 @@
 - name: create Kubernetes certificate authorities
   shell: echo '{{ lookup('template', '../templates/ca_csr.j2', convert_data=False) }}' | bin/cfssl gencert -initca - | bin/cfssljson -bare "{{ item }}" -
   args:
-    chdir: ssl
+    chdir: secret/ssl
     creates: "{{ item }}.pem"
   with_items:
     - kubernetes/etcd-ca
@@ -17,4 +17,4 @@
 
 - template:
     src: ../templates/ca_config.j2
-    dest: ssl/ca_config.json
+    dest: secret/ssl/ca_config.json
